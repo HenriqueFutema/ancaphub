@@ -1,7 +1,15 @@
 import React from 'react'
 import {
   Link,
+  Card,
+  CardHeader,
+  IconButton,
+  CardContent,
+  CardActions,
 } from "@material-ui/core"
+import {
+MoreVert as MoreVertIcon,
+} from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core'
 import ProfilePicture from '../profile/profilePicture';
 import ShowName from '../profile/showName'
@@ -30,15 +38,27 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 'bold',
   },
   commentText:{
-    padding:0, 
+    display: 'flex',
+    flexDirection: 'row',
+    padding: 0, 
     margin:0,
     textAlign: 'left'
+  },
+  commentSettings:{
+    display: 'flex',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    padding: '0 !important'
+  },
+  padding0:{
+    padding: 0
   },
   date: {fontSize: 13, color: theme.palette.text.secondary, marginTop:5}
 }))
 
-const Comment = ({ comment }) => {
+const Comment = ({ comment, authUser }) => {
   const classes = useStyles()
+  const ownProfile = authUser.isAuthenticated && comment.user._id === authUser.user._id;
 
   return (
     <div className={classes.root}>
@@ -46,7 +66,15 @@ const Comment = ({ comment }) => {
       <div className={classes.commentContent}>
         <p className={classes.commentText}>
           <ShowName user={comment.user} fontSize={14}/> 
-          {" " + comment.content}
+          <p>{" " + comment.content}</p>
+
+        <div className={classes.commentSettings}>
+        {ownProfile && (
+          <IconButton aria-label="Settings" className={classes.padding0}>
+            <MoreVertIcon />
+          </IconButton>
+        )}
+        </div>      
         </p>
         <span className={classes.date}>{moment(comment.date).tz('America/Sao_Paulo').locale('pt-br', ptBr).startOf(comment.date).fromNow()}</span>
       </div>
